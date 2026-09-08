@@ -44,6 +44,14 @@ android {
 
 dependencies {
 
+    implementation(platform(libs.firebase.bom.v3450))
+
+    implementation(libs.google.firebase.auth)
+    implementation(libs.google.firebase.firestore)
+
+
+
+
     implementation(libs.androidx.hilt.common)
     implementation(libs.androidx.hilt.work)
     implementation(libs.androidx.room.runtime)
@@ -60,8 +68,8 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.ktx)
     testImplementation(libs.junit)
 
-    implementation(platform("com.google.firebase:firebase-bom:34.18.0"))
-    implementation("com.google.firebase:firebase-analytics")
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
 
     // -------------------------------------------------------------------------
     // Compose
