@@ -18,7 +18,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.habitflow"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 37
         versionCode = 1
         versionName = "1.0"
@@ -36,6 +36,8 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
+        //isCoreLibraryDesugaringEnabled = true
+
     }
     buildFeatures {
         compose = true
@@ -45,6 +47,8 @@ android {
 dependencies {
 
     implementation(platform(libs.firebase.bom.v3450))
+    implementation(libs.androidx.compose.foundation)
+    implementation(libs.androidx.navigation.runtime.ktx)
 
     implementation(libs.google.firebase.auth)
     implementation(libs.google.firebase.firestore)

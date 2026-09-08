@@ -16,5 +16,6 @@ data class Habit(
 enum class HabitFrequency {
     DAILY,
     WEEKDAYS,
-    WEEKENDS
+    WEEKENDS,
+    WEEKLY
 }

@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.example.habitflow.data.local.room.HabitDatabase
 import com.example.habitflow.data.local.room.dao.CompletionDao
+import com.example.habitflow.data.local.room.dao.CompletionSyncOperationDao
 import com.example.habitflow.data.local.room.dao.HabitDao
 import dagger.Module
 import dagger.Provides
@@ -42,5 +43,12 @@ object DatabaseModule {
         database: HabitDatabase
     ): CompletionDao {
         return database.completionDao()
+    }
+
+    @Provides
+    fun provideCompletionSyncOperationDao(
+        database: HabitDatabase
+    ): CompletionSyncOperationDao {
+        return database.completionSyncOperationDao()
     }
 }
