@@ -11,6 +11,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.habitflow.ui.analysis.AnalysisScreen
+import com.example.habitflow.ui.analysis.AnalysisViewModel
 import com.example.habitflow.ui.createHabit.CreateHabitScreen
 import com.example.habitflow.ui.createHabit.CreateHabitViewModel
 import com.example.habitflow.ui.home.HomeScreen
@@ -86,7 +87,8 @@ fun AppNavigation(
             }
 
             composable<AppRoutes.AnalysisRoute> {
-                AnalysisScreen()
+                val analysisViewModel : AnalysisViewModel = hiltViewModel()
+                AnalysisScreen(analysisViewModel)
             }
         }
     }

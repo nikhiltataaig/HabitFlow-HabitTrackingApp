@@ -5,4 +5,3 @@ data class LoginUiState(
     val password: String = "",
     val errorMessage: String? = null
 )
-

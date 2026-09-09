@@ -10,5 +10,4 @@ sealed interface LoginScreenEvents {
 
     data object onLoginClicked: LoginScreenEvents
 
-
 }

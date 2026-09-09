@@ -3,7 +3,6 @@ package com.example.habitflow.ui.home
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
-
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -86,10 +85,13 @@ fun HomeScreen(
             .padding(16.dp)
     ) {
 
+
         Text(
             text = "Today's Habits",
             style = MaterialTheme.typography.headlineMedium
         )
+
+
 
         Spacer(modifier = Modifier.height(16.dp))
 

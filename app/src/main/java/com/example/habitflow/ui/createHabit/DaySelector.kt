@@ -34,7 +34,7 @@ import androidx.compose.ui.unit.dp
             horizontalArrangement = Arrangement.spacedBy(6.dp)
         ) {
 
-            days.take(4).forEach { (dayNumber, dayName) ->
+            days.take(6).forEach { (dayNumber, dayName) ->
 
                 FilterChip(
                     selected = dayNumber in selectedDays,
@@ -53,7 +53,7 @@ import androidx.compose.ui.unit.dp
             horizontalArrangement = Arrangement.spacedBy(6.dp)
         ) {
 
-            days.drop(4).forEach { (dayNumber, dayName) ->
+            days.drop(1).forEach { (dayNumber, dayName) ->
 
                 FilterChip(
                     selected = dayNumber in selectedDays,
