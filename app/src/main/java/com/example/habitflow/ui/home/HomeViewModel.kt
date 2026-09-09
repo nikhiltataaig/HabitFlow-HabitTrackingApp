@@ -52,6 +52,10 @@ class HomeViewModel @Inject constructor(
             is HomeScreenEvents.onHabitToggled -> {
                 toggleHabit(event.habit)
             }
+            is HomeScreenEvents.onHabitClicked ->
+                viewModelScope.launch {
+                    _uiEvent.send(CommonUiEvent.Navigate(AppRoutes.HabitDetailRoute(event.habitId)))
+                 }
         }
     }
 

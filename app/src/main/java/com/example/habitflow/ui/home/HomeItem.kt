@@ -18,11 +18,13 @@ import com.example.habitflow.domain.model.Habit
 fun HabitItem(
     habit: Habit,
     isCompleted: Boolean,
-    onToggle: () -> Unit
+    onToggle: () -> Unit,
+    onClick : () -> Unit
 ) {
 
     Card(
         modifier = Modifier.fillMaxWidth()
+        , onClick = onClick
     ) {
 
         Row(

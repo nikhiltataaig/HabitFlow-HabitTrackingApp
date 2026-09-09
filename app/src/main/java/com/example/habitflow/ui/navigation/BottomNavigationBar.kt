@@ -60,7 +60,7 @@ fun BottomNavigationBar(
             ) == true,
 
             onClick = {
-                navController.navigate(AppRoutes.CreateHabitRoute) {
+                navController.navigate(AppRoutes.CreateHabitRoute()) {
 
                     popUpTo<AppRoutes.HomeRoute> {
                         saveState = true

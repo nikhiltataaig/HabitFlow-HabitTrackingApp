@@ -124,6 +124,9 @@ fun HomeScreen(
                             homeViewModel.onEvent(
                                 HomeScreenEvents.onHabitToggled(habit)
                             )
+                        },
+                        onClick = {
+                            homeViewModel.onEvent(HomeScreenEvents.onHabitClicked(habit.id))
                         }
                     )
                 }

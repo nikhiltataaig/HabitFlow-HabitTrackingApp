@@ -18,7 +18,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import javax.inject.Inject
-
 @HiltViewModel
 class AnalysisViewModel @Inject constructor(
     private val habitRepository: HabitRepository,
@@ -50,9 +49,10 @@ class AnalysisViewModel @Inject constructor(
 
         viewModelScope.launch {
 
+            _uiEvent.send(CommonUiEvent.ShowLoader)
             _uiState.update {
                 it.copy(
-                    isLoading = true,
+
                     errorMessage = null
                 )
             }
@@ -63,10 +63,11 @@ class AnalysisViewModel @Inject constructor(
 
                 _uiState.update {
                     it.copy(
-                        isLoading = false,
+
                         errorMessage = "User not found"
                     )
                 }
+                _uiEvent.send(CommonUiEvent.DoNothing)
 
                 return@launch
             }
@@ -84,10 +85,11 @@ class AnalysisViewModel @Inject constructor(
 
                 _uiState.update {
                     it.copy(
-                        isLoading = false,
+
                         errorMessage = "Failed to load analytics"
                     )
                 }
+                _uiEvent.send(CommonUiEvent.DoNothing)
 
                 return@launch
             }
@@ -99,35 +101,45 @@ class AnalysisViewModel @Inject constructor(
             val completions =
                 completionsResult.getOrThrow()
 
-            val today = LocalDate.now()
-
-            val completedToday = completions
-                .count {
-                    it.date == today.toString()
-                }
-
-            val totalPossibleCompletions =
-                calculateTotalPossibleCompletions(
-                    habits,
-                    completions
+            val dailyActivity =
+                calculateDailyActivity(
+                    habits = habits,
+                    completions = completions
                 )
 
+            val today = LocalDate.now().toString()
+
+            val completedToday = completions
+                .count { it.date == today }
+
+            val habitAnalysis = habits.map { habit ->
+
+                val habitCompletions = completions
+                    .filter { it.habitId == habit.id }
+
+                val completedDates = habitCompletions
+                    .map { LocalDate.parse(it.date) }
+                    .toSet()
+
+                HabitAnalysis(
+                    habit = habit,
+                    currentStreak = calculateCurrentStreak(
+                        habit,
+                        habitCompletions
+                    ),
+                    bestStreak = calculateBestStreak(
+                        habit,
+                        habitCompletions
+                    ),
+                    completedCount = habitCompletions.size,
+                    completedDates = completedDates
+                )
+            }
             val completionRate =
-                if (totalPossibleCompletions == 0) {
-                    0
-                } else {
-                    (
-                            completions.size.toFloat() /
-                                    totalPossibleCompletions
-                                    * 100
-                            ).toInt()
-                }
-
-            val currentStreak =
-                calculateCurrentStreak(completions)
-
-            val bestStreak =
-                calculateBestStreak(completions)
+                calculateOverallCompletionRate(
+                    habits = habits,
+                    completions = completions
+                )
 
             _uiState.update {
 
@@ -135,61 +147,17 @@ class AnalysisViewModel @Inject constructor(
                     totalHabits = habits.size,
                     completedToday = completedToday,
                     completionRate = completionRate,
-                    currentStreak = currentStreak,
-                    bestStreak = bestStreak,
-                    isLoading = false
+                    dailyActivity = dailyActivity,
+                    habitAnalysis = habitAnalysis,
+
                 )
             }
+            _uiEvent.send(CommonUiEvent.DoNothing)
         }
-    }
-
-    private fun calculateTotalPossibleCompletions(
-        habits: List<Habit>,
-        completions: List<HabitCompletion>
-    ): Int {
-
-        if (habits.isEmpty()) return 0
-
-        val firstCompletionDate =
-            completions
-                .minOfOrNull {
-                    LocalDate.parse(it.date)
-                }
-                ?: LocalDate.now()
-
-        val today = LocalDate.now()
-
-        var total = 0
-
-        habits.forEach { habit ->
-
-            var date = firstCompletionDate
-
-            while (!date.isAfter(today)) {
-
-                val shouldComplete =
-                    when (habit.frequency) {
-
-                        HabitFrequency.DAILY -> true
-
-                        HabitFrequency.WEEKLY ->
-                            date.dayOfWeek.value in habit.targetDays
-
-                        else -> { false}
-                    }
-
-                if (shouldComplete) {
-                    total++
-                }
-
-                date = date.plusDays(1)
-            }
-        }
-
-        return total
     }
 
     private fun calculateCurrentStreak(
+        habit: Habit,
         completions: List<HabitCompletion>
     ): Int {
 
@@ -200,9 +168,14 @@ class AnalysisViewModel @Inject constructor(
         var date = LocalDate.now()
         var streak = 0
 
-        while (completedDates.contains(date)) {
+        while (isScheduledDay(habit, date)) {
 
-            streak++
+            if (date in completedDates) {
+                streak++
+            } else {
+                break
+            }
+
             date = date.minusDays(1)
         }
 
@@ -210,29 +183,178 @@ class AnalysisViewModel @Inject constructor(
     }
 
     private fun calculateBestStreak(
+        habit: Habit,
         completions: List<HabitCompletion>
     ): Int {
 
-        val dates = completions
+        val completedDates = completions
             .map { LocalDate.parse(it.date) }
-            .distinct()
-            .sorted()
+            .toSet()
 
-        if (dates.isEmpty()) return 0
+        if (completedDates.isEmpty()) {
+            return 0
+        }
 
-        var best = 1
-        var current = 1
+        val sortedDates = completedDates.sorted()
 
-        for (i in 1 until dates.size) {
+        var bestStreak = 1
+        var currentStreak = 1
 
-            if (dates[i] == dates[i - 1].plusDays(1)) {
-                current++
-                best = maxOf(best, current)
+        for (index in 1 until sortedDates.size) {
+
+            val previousDate = sortedDates[index - 1]
+            val currentDate = sortedDates[index]
+
+            if (
+                areConsecutiveScheduledDays(
+                    habit = habit,
+                    previousDate = previousDate,
+                    currentDate = currentDate
+                )
+            ) {
+
+                currentStreak++
+
+                bestStreak =
+                    maxOf(
+                        bestStreak,
+                        currentStreak
+                    )
+
             } else {
-                current = 1
+
+                currentStreak = 1
             }
         }
 
-        return best
+        return bestStreak
+    }
+
+    private fun isScheduledDay(
+        habit: Habit,
+        date: LocalDate
+    ): Boolean {
+
+        return when (habit.frequency) {
+
+            HabitFrequency.DAILY -> true
+
+            HabitFrequency.WEEKLY ->
+                date.dayOfWeek.value in habit.targetDays
+            else -> {
+                false
+            }
+        }
+    }
+
+    private fun calculateDailyActivity(
+        habits: List<Habit>,
+        completions: List<HabitCompletion>,
+        days: Int = 30
+    ): List<DailyHabitActivity> {
+
+        val today = LocalDate.now()
+
+        val startDate = today.minusDays(
+            (days - 1).toLong()
+        )
+
+        val completionMap =
+            completions.groupBy {
+                LocalDate.parse(it.date)
+            }
+
+        return (0 until days).map { offset ->
+
+            val date = startDate.plusDays(
+                offset.toLong()
+            )
+
+            val totalHabits = habits.count { habit ->
+
+                isScheduledDay(
+                    habit = habit,
+                    date = date
+                )
+            }
+
+            val completedHabits =
+                completionMap[date]
+                    ?.count { completion ->
+                        habits.any {
+                            it.id == completion.habitId
+                        }
+                    }
+                    ?: 0
+
+            DailyHabitActivity(
+                date = date,
+                totalHabits = totalHabits,
+                completedHabits = completedHabits
+            )
+        }
+    }
+    private fun areConsecutiveScheduledDays(
+        habit: Habit,
+        previousDate: LocalDate,
+        currentDate: LocalDate
+    ): Boolean {
+
+        var date = previousDate.plusDays(1)
+
+        while (date.isBefore(currentDate)) {
+
+            if (isScheduledDay(habit, date)) {
+                return false
+            }
+
+            date = date.plusDays(1)
+        }
+
+        return isScheduledDay(habit, currentDate)
+    }
+
+    private fun calculateOverallCompletionRate(
+        habits: List<Habit>,
+        completions: List<HabitCompletion>
+    ): Int {
+
+        if (habits.isEmpty()) {
+            return 0
+        }
+
+        val today = LocalDate.now()
+
+        val firstDate = completions
+            .minOfOrNull {
+                LocalDate.parse(it.date)
+            }
+            ?: today
+
+        var possibleCompletions = 0
+
+        habits.forEach { habit ->
+
+            var date = firstDate
+
+            while (!date.isAfter(today)) {
+
+                if (isScheduledDay(habit, date)) {
+                    possibleCompletions++
+                }
+
+                date = date.plusDays(1)
+            }
+        }
+
+        if (possibleCompletions == 0) {
+            return 0
+        }
+
+        return (
+                completions.size.toFloat() /
+                        possibleCompletions *
+                        100
+                ).toInt()
     }
 }

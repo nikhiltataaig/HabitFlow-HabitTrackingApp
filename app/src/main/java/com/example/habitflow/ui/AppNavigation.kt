@@ -10,10 +10,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.example.habitflow.ui.analysis.AnalysisScreen
 import com.example.habitflow.ui.analysis.AnalysisViewModel
 import com.example.habitflow.ui.createHabit.CreateHabitScreen
 import com.example.habitflow.ui.createHabit.CreateHabitViewModel
+import com.example.habitflow.ui.habitDetail.HabitDetailScreen
+import com.example.habitflow.ui.habitDetail.HabitDetailViewModel
 import com.example.habitflow.ui.home.HomeScreen
 import com.example.habitflow.ui.home.HomeViewModel
 import com.example.habitflow.ui.login.LoginScreen
@@ -89,6 +92,19 @@ fun AppNavigation(
             composable<AppRoutes.AnalysisRoute> {
                 val analysisViewModel : AnalysisViewModel = hiltViewModel()
                 AnalysisScreen(analysisViewModel)
+            }
+            composable<AppRoutes.HabitDetailRoute>{
+                    backStackEntry ->
+
+                val route = backStackEntry.toRoute<AppRoutes.HabitDetailRoute>()
+
+                val viewModel: HabitDetailViewModel = hiltViewModel()
+
+                HabitDetailScreen(
+                    navController = navController,
+                    habitId = route.habitId,
+                    habitDetailViewModel = viewModel
+                )
             }
         }
     }

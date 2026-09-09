@@ -49,6 +49,8 @@ dependencies {
     implementation(platform(libs.firebase.bom.v3450))
     implementation(libs.androidx.compose.foundation)
     implementation(libs.androidx.navigation.runtime.ktx)
+    implementation(libs.androidx.ui)
+    implementation(libs.androidx.ui.graphics)
 
     implementation(libs.google.firebase.auth)
     implementation(libs.google.firebase.firestore)
