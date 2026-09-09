@@ -14,6 +14,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -38,7 +39,6 @@ fun AnalysisScreen(
         .collectAsStateWithLifecycle()
 
 
-
     val lifecycleOwner = LocalLifecycleOwner.current
     val context = LocalContext.current
 
@@ -60,16 +60,10 @@ fun AnalysisScreen(
                     is CommonUiEvent.Navigate -> {
 
 
-
-
-
-
                     }
 
 
-
                     is CommonUiEvent.ShowToast -> {
-
 
 
                         Toast.makeText(
@@ -91,209 +85,218 @@ fun AnalysisScreen(
             }
     }
 
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 16.dp),
-
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+    PullToRefreshBox(
+        isRefreshing = showLoader.value,
+        onRefresh = {
+            analysisViewModel.onEvent(AnalysisScreenEvents.OnRefresh)
+        },
+        modifier = Modifier.fillMaxSize()
     ) {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 16.dp),
 
-        /*
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+
+            /*
          * ------------------------------------------------
          * Header
          * ------------------------------------------------
          */
 
-        item {
+            item {
 
-            Spacer(
-                modifier = Modifier.height(16.dp)
-            )
+                Spacer(
+                    modifier = Modifier.height(16.dp)
+                )
 
-            Text(
-                text = "Your Progress",
-                style = MaterialTheme.typography.headlineMedium
-            )
-        }
+                Text(
+                    text = "Your Progress",
+                    style = MaterialTheme.typography.headlineMedium
+                )
+            }
 
 
-        /*
+            /*
          * ------------------------------------------------
          * Loading
          * ------------------------------------------------
          */
 
-        if (showLoader.value) {
-
-            item {
-
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 32.dp),
-                    horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally
-                ) {
-
-                    CircularProgressIndicator()
-                }
-            }
-
-        } else {
-
-            /*
-             * ------------------------------------------------
-             * Overall Activity Chart
-             * ------------------------------------------------
-             */
-
-            item {
-
-                HabitActivityChart(
-                    dailyActivity = uiState.dailyActivity
-                )
-            }
-
-
-            /*
-             * ------------------------------------------------
-             * Overall Statistics
-             * ------------------------------------------------
-             */
-
-            item {
-
-                Spacer(
-                    modifier = Modifier.height(12.dp)
-                )
-
-                Text(
-                    text = "Overview",
-                    style = MaterialTheme.typography.titleLarge
-                )
-            }
-
-            item {
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-
-                    AnalysisCard(
-                        modifier = Modifier.weight(1f),
-                        title = "Active Habits",
-                        value = uiState.totalHabits.toString()
-                    )
-
-                    AnalysisCard(
-                        modifier = Modifier.weight(1f),
-                        title = "Completed Today",
-                        value = uiState.completedToday.toString()
-                    )
-                }
-            }
-
-            item {
-
-                AnalysisCard(
-                    modifier = Modifier.fillMaxWidth(),
-                    title = "Completion Rate",
-                    value = "${uiState.completionRate}%"
-                )
-            }
-
-
-            /*
-             * ------------------------------------------------
-             * Habit Performance
-             * ------------------------------------------------
-             */
-
-            item {
-
-                Spacer(
-                    modifier = Modifier.height(12.dp)
-                )
-
-                Text(
-                    text = "Habit Performance",
-                    style = MaterialTheme.typography.titleLarge
-                )
-            }
-
-
-            /*
-             * ------------------------------------------------
-             * Empty State
-             * ------------------------------------------------
-             */
-
-            if (uiState.habitAnalysis.isEmpty()) {
+            if (showLoader.value) {
 
                 item {
 
-                    Text(
-                        text = "No habit data available yet.",
-                        style = MaterialTheme.typography.bodyMedium
-                    )
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 32.dp),
+                        horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally
+                    ) {
+
+                        CircularProgressIndicator()
+                    }
                 }
 
             } else {
 
                 /*
+             * ------------------------------------------------
+             * Overall Activity Chart
+             * ------------------------------------------------
+             */
+
+                item {
+
+                    HabitActivityChart(
+                        dailyActivity = uiState.dailyActivity
+                    )
+                }
+
+
+                /*
+             * ------------------------------------------------
+             * Overall Statistics
+             * ------------------------------------------------
+             */
+
+                item {
+
+                    Spacer(
+                        modifier = Modifier.height(12.dp)
+                    )
+
+                    Text(
+                        text = "Overview",
+                        style = MaterialTheme.typography.titleLarge
+                    )
+                }
+
+                item {
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+
+                        AnalysisCard(
+                            modifier = Modifier.weight(1f),
+                            title = "Active Habits",
+                            value = uiState.totalHabits.toString()
+                        )
+
+                        AnalysisCard(
+                            modifier = Modifier.weight(1f),
+                            title = "Completed Today",
+                            value = uiState.completedToday.toString()
+                        )
+                    }
+                }
+
+                item {
+
+                    AnalysisCard(
+                        modifier = Modifier.fillMaxWidth(),
+                        title = "Completion Rate",
+                        value = "${uiState.completionRate}%"
+                    )
+                }
+
+
+                /*
+             * ------------------------------------------------
+             * Habit Performance
+             * ------------------------------------------------
+             */
+
+                item {
+
+                    Spacer(
+                        modifier = Modifier.height(12.dp)
+                    )
+
+                    Text(
+                        text = "Habit Performance",
+                        style = MaterialTheme.typography.titleLarge
+                    )
+                }
+
+
+                /*
+             * ------------------------------------------------
+             * Empty State
+             * ------------------------------------------------
+             */
+
+                if (uiState.habitAnalysis.isEmpty()) {
+
+                    item {
+
+                        Text(
+                            text = "No habit data available yet.",
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                    }
+
+                } else {
+
+                    /*
                  * ------------------------------------------------
                  * Individual Habit Analysis
                  * ------------------------------------------------
                  */
 
-                items(
-                    items = uiState.habitAnalysis,
-                    key = { it.habit.id }
-                ) { analysis ->
+                    items(
+                        items = uiState.habitAnalysis,
+                        key = { it.habit.id }
+                    ) { analysis ->
 
-                    HabitAnalysisCard(
-                        analysis = analysis
-                    )
+                        HabitAnalysisCard(
+                            analysis = analysis
+                        )
+                    }
                 }
             }
-        }
 
 
-        /*
+            /*
          * ------------------------------------------------
          * Error
          * ------------------------------------------------
          */
 
-        uiState.errorMessage?.let { error ->
+            uiState.errorMessage?.let { error ->
 
-            item {
+                item {
 
-                Spacer(
-                    modifier = Modifier.height(8.dp)
-                )
+                    Spacer(
+                        modifier = Modifier.height(8.dp)
+                    )
 
-                Text(
-                    text = error,
-                    color = MaterialTheme.colorScheme.error,
-                    style = MaterialTheme.typography.bodyMedium
-                )
+                    Text(
+                        text = error,
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                }
             }
-        }
 
 
-        /*
+            /*
          * ------------------------------------------------
          * Bottom spacing
          * ------------------------------------------------
          */
 
-        item {
+            item {
 
-            Spacer(
-                modifier = Modifier.height(24.dp)
-            )
+                Spacer(
+                    modifier = Modifier.height(24.dp)
+                )
+            }
         }
+
     }
 }

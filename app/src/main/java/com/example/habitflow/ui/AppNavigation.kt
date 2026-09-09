@@ -34,10 +34,7 @@ fun AppNavigation(
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
-    /*
-     * Type-safe Navigation generates a route string internally.
-     * We only use the class name to identify which screen is active.
-     */
+
     val showBottomBar =
         currentRoute?.contains(AppRoutes.HomeRoute::class.simpleName ?: "") == true ||
                 currentRoute?.contains(AppRoutes.CreateHabitRoute::class.simpleName ?: "") == true ||

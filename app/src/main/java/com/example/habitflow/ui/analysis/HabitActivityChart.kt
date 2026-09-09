@@ -90,9 +90,7 @@ fun HabitActivityChart(
             verticalAlignment = Alignment.Top
         ) {
 
-            /*
-             * Y-axis labels
-             */
+
             Column(
                 modifier = Modifier
                     .height(220.dp)
