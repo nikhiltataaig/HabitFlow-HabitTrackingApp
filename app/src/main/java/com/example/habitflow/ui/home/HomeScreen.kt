@@ -20,12 +20,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
 import com.example.habitflow.CommonUiEvent
+import com.example.habitflow.ui.TestTags
 
 @Composable
 fun HomeScreen(
@@ -97,7 +99,8 @@ fun HomeScreen(
 
         Text(
             text = "Completed today: ${uiState.completedHabitIds.size}",
-            style = MaterialTheme.typography.bodyLarge
+            style = MaterialTheme.typography.bodyLarge,
+            modifier = Modifier.testTag(TestTags.COMPLETED_COUNT)
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -109,7 +112,8 @@ fun HomeScreen(
         } else {
 
             LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.testTag(TestTags.HABIT_LIST)
             ) {
                 items(
                     items = uiState.habits,

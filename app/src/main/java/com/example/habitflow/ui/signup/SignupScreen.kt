@@ -32,6 +32,7 @@ import androidx.lifecycle.flowWithLifecycle
 import androidx.navigation.NavController
 import com.example.habitflow.CommonUiEvent
 import com.example.habitflow.ui.AppRoutes
+import com.example.habitflow.ui.TestTags
 
 
 @Composable
@@ -108,7 +109,7 @@ fun SignupScreen(
             label = {
                 Text("Email")
             },
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().testTag(TestTags.EMAIL_TEXT_FIELD),
             singleLine = true,
             enabled = !showLoader.value
         )
@@ -126,7 +127,7 @@ fun SignupScreen(
             label = {
                 Text("Name")
             },
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().testTag(TestTags.NAME_TEXT_FIELD),
             singleLine = true,
             enabled = !showLoader.value
         )
@@ -147,7 +148,7 @@ fun SignupScreen(
             },
             visualTransformation =
                 PasswordVisualTransformation(),
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().testTag(TestTags.PASSWORD_TEXT_FIELD),
             singleLine = true,
             enabled = !showLoader.value
         )
@@ -168,7 +169,7 @@ fun SignupScreen(
             },
             visualTransformation =
                 PasswordVisualTransformation(),
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().testTag(TestTags.CONFIRM_PASSWORD_TEXT_FIELD),
             singleLine = true,
             enabled = !showLoader.value
         )
@@ -183,13 +184,15 @@ fun SignupScreen(
                     SignupScreenEvent.onSignupClicked
                 )
             },
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().testTag(TestTags.SIGNUP_BUTTON),
             enabled = !showLoader.value
         ) {
 
             if (showLoader.value ) {
 
-                CircularProgressIndicator()
+                CircularProgressIndicator(
+                    modifier = Modifier.testTag(TestTags.LOADER)
+                )
 
             } else {
 
@@ -199,7 +202,8 @@ fun SignupScreen(
 
         TextButton(
             onClick = { signupViewModel.onEvent(SignupScreenEvent.onLoginClicked) },
-            enabled = !showLoader.value
+            enabled = !showLoader.value,
+            modifier = Modifier.testTag(TestTags.LOGIN_TEXT_BUTTON)
         ) {
 
             Text(
@@ -211,7 +215,8 @@ fun SignupScreen(
 
             Text(
                 text = error,
-                color = MaterialTheme.colorScheme.error
+                color = MaterialTheme.colorScheme.error,
+                modifier = Modifier.testTag(TestTags.ERROR_TEXT)
             )
         }
     }

@@ -16,7 +16,6 @@ class RemoteToLocalSyncWorker @AssistedInject constructor(
     appContext,
     workerParams
 ) {
-
     override suspend fun doWork(): Result {
 
         val userId =

@@ -28,6 +28,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -37,6 +38,7 @@ import androidx.navigation.NavController
 import com.example.habitflow.CommonUiEvent
 import com.example.habitflow.domain.model.HabitFrequency
 import com.example.habitflow.ui.AppRoutes
+import com.example.habitflow.ui.TestTags
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -67,10 +69,8 @@ fun CreateHabitScreen(
 
                     is CommonUiEvent.Navigate -> {
 
-
-
                         navController.navigate(event.route) {
-                            popUpTo(AppRoutes.CreateHabitRoute) {
+                            popUpTo<AppRoutes.CreateHabitRoute> {
                                 inclusive = true
                             }
                         }
@@ -114,7 +114,8 @@ fun CreateHabitScreen(
                                 CreateHabitScreenEvent.OnBackClicked
                             )
                         },
-                        enabled = !showLoader.value
+                        enabled = !showLoader.value,
+                        modifier = Modifier.testTag(TestTags.BACK_BUTTON)
                     ) {
                         Text("Back")
                     }
@@ -142,7 +143,7 @@ fun CreateHabitScreen(
                 label = {
                     Text("Habit name")
                 },
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().testTag(TestTags.HABIT_NAME_FIELD),
                 singleLine = true,
                 enabled = !showLoader.value
             )
@@ -157,7 +158,7 @@ fun CreateHabitScreen(
                 label = {
                     Text("Description")
                 },
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().testTag(TestTags.HABIT_DESC_FIELD),
                 minLines = 3,
                 maxLines = 5,
                 enabled = !showLoader.value
@@ -184,7 +185,8 @@ fun CreateHabitScreen(
                     label = {
                         Text("Daily")
                     },
-                    enabled = !showLoader.value
+                    enabled = !showLoader.value,
+                    modifier = Modifier.testTag(TestTags.FREQ_DAILY_CHIP)
                 )
 
                 FilterChip(
@@ -199,7 +201,8 @@ fun CreateHabitScreen(
                     label = {
                         Text("Weekly")
                     },
-                    enabled = !showLoader.value
+                    enabled = !showLoader.value,
+                    modifier = Modifier.testTag(TestTags.FREQ_WEEKLY_CHIP)
                 )
             }
 
@@ -240,13 +243,15 @@ fun CreateHabitScreen(
                         CreateHabitScreenEvent.OnCreateClicked
                     )
                 },
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().testTag(TestTags.CREATE_HABIT_BUTTON),
                 enabled = !showLoader.value
             ) {
 
                 if (showLoader.value) {
 
-                    CircularProgressIndicator()
+                    CircularProgressIndicator(
+                        modifier = Modifier.testTag(TestTags.LOADER)
+                    )
 
                 } else {
 

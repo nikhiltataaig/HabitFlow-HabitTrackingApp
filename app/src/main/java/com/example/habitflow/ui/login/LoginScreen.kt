@@ -21,6 +21,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
@@ -30,6 +31,7 @@ import androidx.lifecycle.flowWithLifecycle
 import androidx.navigation.NavController
 import com.example.habitflow.CommonUiEvent
 import com.example.habitflow.ui.AppRoutes
+import com.example.habitflow.ui.TestTags
 
 
 @Composable
@@ -114,7 +116,7 @@ fun LoginScreen (
             label = {
                 Text("Email")
             },
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().testTag(TestTags.EMAIL_TEXT_FIELD),
             singleLine = true,
             enabled = !showLoader.value
         )
@@ -135,7 +137,7 @@ fun LoginScreen (
             },
             visualTransformation =
                 PasswordVisualTransformation(),
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().testTag(TestTags.PASSWORD_TEXT_FIELD),
             singleLine = true,
             enabled = !showLoader.value
         )
@@ -150,13 +152,15 @@ fun LoginScreen (
                     LoginScreenEvents.onLoginClicked
                 )
             },
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().testTag(TestTags.LOGIN_BUTTON),
             enabled = !showLoader.value
         ) {
 
             if (showLoader.value) {
 
-                CircularProgressIndicator()
+                CircularProgressIndicator(
+                    modifier = Modifier.testTag(TestTags.LOADER)
+                )
 
             } else {
 
@@ -170,7 +174,8 @@ fun LoginScreen (
 
         TextButton(
             onClick = { loginViewModel.onEvent(LoginScreenEvents.onSignupClicked) },
-            enabled = !showLoader.value
+            enabled = !showLoader.value,
+            modifier = Modifier.testTag(TestTags.SIGNUP_TEXT_BUTTON)
         ) {
 
             Text(
@@ -186,7 +191,8 @@ fun LoginScreen (
 
             Text(
                 text = error,
-                color = MaterialTheme.colorScheme.error
+                color = MaterialTheme.colorScheme.error,
+                modifier = Modifier.testTag(TestTags.ERROR_TEXT)
             )
         }
     }

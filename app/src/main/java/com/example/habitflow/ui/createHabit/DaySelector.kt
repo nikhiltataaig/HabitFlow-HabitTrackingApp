@@ -6,7 +6,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
+import com.example.habitflow.ui.TestTags
 
 
 @Composable
@@ -34,7 +37,7 @@ import androidx.compose.ui.unit.dp
             horizontalArrangement = Arrangement.spacedBy(6.dp)
         ) {
 
-            days.take(6).forEach { (dayNumber, dayName) ->
+            days.take(4).forEach { (dayNumber, dayName) ->
 
                 FilterChip(
                     selected = dayNumber in selectedDays,
@@ -44,7 +47,8 @@ import androidx.compose.ui.unit.dp
                     label = {
                         Text(dayName)
                     },
-                    enabled = enabled
+                    enabled = enabled,
+                    modifier = Modifier.testTag("${TestTags.DAY_CHIP_PREFIX}$dayNumber")
                 )
             }
         }
@@ -53,7 +57,7 @@ import androidx.compose.ui.unit.dp
             horizontalArrangement = Arrangement.spacedBy(6.dp)
         ) {
 
-            days.drop(1).forEach { (dayNumber, dayName) ->
+            days.drop(4).forEach { (dayNumber, dayName) ->
 
                 FilterChip(
                     selected = dayNumber in selectedDays,
@@ -63,7 +67,8 @@ import androidx.compose.ui.unit.dp
                     label = {
                         Text(dayName)
                     },
-                    enabled = enabled
+                    enabled = enabled,
+                    modifier = Modifier.testTag("${TestTags.DAY_CHIP_PREFIX}$dayNumber")
                 )
             }
         }

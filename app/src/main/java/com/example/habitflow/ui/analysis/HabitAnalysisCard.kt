@@ -13,7 +13,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
+import com.example.habitflow.ui.TestTags
 
 @Composable
  fun HabitAnalysisCard(
@@ -21,7 +23,7 @@ import androidx.compose.ui.unit.dp
 ) {
 
     Card(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth().testTag("${TestTags.HABIT_ANALYSIS_CARD_PREFIX}${analysis.habit.id}")
     ) {
 
         Column(

@@ -22,6 +22,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -29,6 +30,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
 import com.example.habitflow.CommonUiEvent
 import com.example.habitflow.ui.AppRoutes
+import com.example.habitflow.ui.TestTags
 
 @Composable
 fun AnalysisScreen(
@@ -136,7 +138,9 @@ fun AnalysisScreen(
                         horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally
                     ) {
 
-                        CircularProgressIndicator()
+                        CircularProgressIndicator(
+                            modifier = Modifier.testTag(TestTags.LOADER)
+                        )
                     }
                 }
 
@@ -236,7 +240,8 @@ fun AnalysisScreen(
 
                         Text(
                             text = "No habit data available yet.",
-                            style = MaterialTheme.typography.bodyMedium
+                            style = MaterialTheme.typography.bodyMedium,
+                            modifier = Modifier.testTag("EMPTY_ANALYSIS_TEXT")
                         )
                     }
 

@@ -36,6 +36,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -44,6 +45,7 @@ import androidx.lifecycle.flowWithLifecycle
 import androidx.navigation.NavController
 import com.example.habitflow.CommonUiEvent
 import com.example.habitflow.domain.model.HabitFrequency
+import com.example.habitflow.ui.TestTags
 import com.example.habitflow.ui.analysis.HabitHeatmap
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -146,7 +148,8 @@ fun HabitDetailScreen(
                         habitDetailViewModel.onEvent(
                             HabitDetailScreenEvents.OnDeleteConfirmed
                         )
-                    }
+                    },
+                    modifier = Modifier.testTag(TestTags.CONFIRM_DELETE_BUTTON)
                 ) {
 
                     Text(
@@ -161,7 +164,8 @@ fun HabitDetailScreen(
                 TextButton(
                     onClick = {
                         showDeleteDialog = false
-                    }
+                    },
+                    modifier = Modifier.testTag(TestTags.CANCEL_DELETE_BUTTON)
                 ) {
 
                     Text(
@@ -186,7 +190,8 @@ fun HabitDetailScreen(
 
                 title = {
                     Text(
-                        text = uiState.habit?.name ?: "Habit"
+                        text = uiState.habit?.name ?: "Habit",
+                        modifier = Modifier.testTag("HABIT_APP_BAR_TITLE")
                     )
                 },
 
@@ -216,7 +221,8 @@ fun HabitDetailScreen(
                     IconButton(
                         onClick = {
                             showDeleteDialog = true
-                        }
+                        },
+                        modifier = Modifier.testTag(TestTags.DELETE_HABIT_ICON)
                     ) {
 
                         Icon(
@@ -282,7 +288,8 @@ fun HabitDetailScreen(
                 TextButton(
                     onClick = {
                         habitDetailViewModel.loadHabit(habitId)
-                    }
+                    },
+                    modifier = Modifier.testTag(TestTags.RETRY_BUTTON)
                 ) {
 
                     Text(
@@ -338,7 +345,8 @@ fun HabitDetailScreen(
 
                     Text(
                         text = habit.name,
-                        style = MaterialTheme.typography.headlineSmall
+                        style = MaterialTheme.typography.headlineSmall,
+                        modifier = Modifier.testTag(TestTags.HABIT_DETAIL_NAME)
                     )
 
                     if (habit.description.isNotBlank()) {
@@ -350,7 +358,8 @@ fun HabitDetailScreen(
                         Text(
                             text = habit.description,
                             style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.testTag(TestTags.HABIT_DETAIL_DESC)
                         )
                     }
 
@@ -395,13 +404,13 @@ fun HabitDetailScreen(
             ) {
 
                 StatisticCard(
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier.weight(1f).testTag("${TestTags.STAT_CARD_PREFIX}Current Streak"),
                     title = "Current Streak",
                     value = "${uiState.currentStreak} days"
                 )
 
                 StatisticCard(
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier.weight(1f).testTag("${TestTags.STAT_CARD_PREFIX}Best Streak"),
                     title = "Best Streak",
                     value = "${uiState.bestStreak} days"
                 )
@@ -413,13 +422,13 @@ fun HabitDetailScreen(
             ) {
 
                 StatisticCard(
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier.weight(1f).testTag("${TestTags.STAT_CARD_PREFIX}Completed"),
                     title = "Completed",
                     value = uiState.completedCount.toString()
                 )
 
                 StatisticCard(
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier.weight(1f).testTag("${TestTags.STAT_CARD_PREFIX}Completion"),
                     title = "Completion",
                     value = "${uiState.completionRate}%"
                 )

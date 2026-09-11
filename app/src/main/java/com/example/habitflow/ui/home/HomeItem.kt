@@ -11,8 +11,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import com.example.habitflow.domain.model.Habit
+import com.example.habitflow.ui.TestTags
 
 @Composable
 fun HabitItem(
@@ -23,8 +25,8 @@ fun HabitItem(
 ) {
 
     Card(
-        modifier = Modifier.fillMaxWidth()
-        , onClick = onClick
+        modifier = Modifier.fillMaxWidth().testTag("${TestTags.HABIT_ITEM_PREFIX}${habit.id}"),
+        onClick = onClick
     ) {
 
         Row(
@@ -54,7 +56,8 @@ fun HabitItem(
                 checked = isCompleted,
                 onCheckedChange = {
                     onToggle()
-                }
+                },
+                modifier = Modifier.testTag("${TestTags.HABIT_TOGGLE_PREFIX}${habit.id}")
             )
         }
     }

@@ -9,7 +9,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
+import com.example.habitflow.ui.TestTags
 
 @Composable
  fun AnalysisCard(
@@ -19,7 +21,7 @@ import androidx.compose.ui.unit.dp
 ) {
 
     Card(
-        modifier = modifier
+        modifier = modifier.testTag("${TestTags.ANALYSIS_SUMMARY_CARD_PREFIX}$title")
     ) {
 
         Column(

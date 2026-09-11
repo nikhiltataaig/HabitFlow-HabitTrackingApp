@@ -5,6 +5,7 @@ import com.example.habitflow.ui.AppRoutes
 
 
 sealed interface CommonUiEvent {
+
     data class ShowToast(val msg: String): CommonUiEvent
 
     data class Navigate(val route : AppRoutes):CommonUiEvent
