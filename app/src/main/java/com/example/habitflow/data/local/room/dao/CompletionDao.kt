@@ -54,6 +54,17 @@ interface CompletionDao {
     ): List<HabitCompletionEntity>
 
     @Query("""
+        SELECT *
+        FROM habit_completions
+        WHERE habitId = :habitId
+        AND date = :date
+    """)
+    suspend fun getCompletion(
+        habitId: String,
+        date: String
+    ): HabitCompletionEntity?
+
+    @Query("""
         SELECT EXISTS(
             SELECT 1
             FROM habit_completions

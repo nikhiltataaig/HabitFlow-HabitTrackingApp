@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.hilt)
     alias(libs.plugins.kotlin.serialization)
     id("com.google.gms.google-services")
+
 }
 
 android {
@@ -70,6 +71,7 @@ dependencies {
     implementation(libs.places)
 
     ksp(libs.androidx.room.compiler)
+    ksp(libs.androidx.hilt.compiler)
 
      implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.compose.ui)

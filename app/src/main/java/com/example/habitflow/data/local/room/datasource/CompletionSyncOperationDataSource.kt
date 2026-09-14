@@ -10,8 +10,8 @@ class CompletionSyncOperationDataSource @Inject constructor(
 
     suspend fun insert(
         operation: CompletionSyncOperationEntity
-    ) {
-        dao.insert(operation)
+    ): Long {
+        return dao.insert(operation)
     }
 
     suspend fun getPendingOperations(

@@ -12,7 +12,7 @@ interface CompletionSyncOperationDao {
     @Insert
     suspend fun insert(
         operation: CompletionSyncOperationEntity
-    )
+    ): Long
 
     @Query("""
         SELECT * FROM completion_sync_operations

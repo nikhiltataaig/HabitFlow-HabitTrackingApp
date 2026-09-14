@@ -1,7 +1,6 @@
 package com.example.habitflow.data.repository
 
-
-
+import android.util.Log
 import com.example.habitflow.data.local.room.datasource.CompletionSyncOperationDataSource
 import com.example.habitflow.data.local.room.datasource.LocalCompletionDataSource
 import com.example.habitflow.data.local.room.entity.CompletionSyncOperationEntity
@@ -27,42 +26,62 @@ class CompletionRepositoryImpl @Inject constructor(
         completion: HabitCompletion
     ): Result<Unit> {
         return try {
-
             localDataSource.insertCompletion(
                 completion.toEntity(
                     syncStatus = SyncStatus.PENDING
                 )
             )
 
-            syncScheduler.schedule(
-                userId = completion.userId
-            )
+            // Try remote sync immediately
+            val remoteResult = remoteDataSource.createCompletion(completion)
+            if (remoteResult.isSuccess) {
+                localDataSource.markAsSynced(
+                    habitId = completion.habitId,
+                    date = completion.date
+                )
+            } else {
+                syncScheduler.schedule(
+                    userId = completion.userId
+                )
+            }
 
             Result.success(Unit)
-
         } catch (e: Exception) {
             Result.failure(e)
         }
     }
+
     override suspend fun getCompletion(
         userId: String,
         completionId: String
     ): Result<HabitCompletion> {
+        return try {
+            // completionId is habitId_date
+            val parts = completionId.split("_")
+            if (parts.size < 2) return Result.failure(Exception("Invalid completion ID"))
+            
+            val habitId = parts[0]
+            val date = parts[1]
 
-        TODO("Not yet implemented")
+            val localCompletion = localDataSource.getCompletion(habitId, date)
+            if (localCompletion != null) {
+                return Result.success(localCompletion.toDomain())
+            }
 
-
-
-
+            val remoteResult = remoteDataSource.getCompletion(userId, completionId)
+            val remoteDto = remoteResult.getOrThrow()
+            
+            Result.success(remoteDto.toDomain())
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 
     override suspend fun getCompletionsForHabit(
         userId: String,
         habitId: String
     ): Result<List<HabitCompletion>> {
-
         return try {
-
             Result.success(
                 localDataSource
                     .getCompletionsForHabit(
@@ -71,7 +90,6 @@ class CompletionRepositoryImpl @Inject constructor(
                     )
                     .map { it.toDomain() }
             )
-
         } catch (e: Exception) {
             Result.failure(e)
         }
@@ -80,15 +98,12 @@ class CompletionRepositoryImpl @Inject constructor(
     override suspend fun getAllCompletions(
         userId: String
     ): Result<List<HabitCompletion>> {
-
         return try {
-
             Result.success(
                 localDataSource
                     .getAllCompletions(userId)
                     .map { it.toDomain() }
             )
-
         } catch (e: Exception) {
             Result.failure(e)
         }
@@ -98,37 +113,32 @@ class CompletionRepositoryImpl @Inject constructor(
         habitId: String,
         date: String
     ): Result<Boolean> {
-
         return try {
-
             Result.success(
                 localDataSource.isCompleted(
                     habitId,
                     date
                 )
             )
-
         } catch (e: Exception) {
             Result.failure(e)
         }
     }
 
     override suspend fun deleteCompletion(
+        userId: String,
         habitId: String,
-        date: String,
-        userId: String
+        date: String
     ): Result<Unit> {
-
         return try {
-
-
+            Log.d("Toggle Habit", " Inside deleteCompletion")
 
             localDataSource.deleteCompletion(
                 habitId = habitId,
                 date = date
             )
 
-            syncOperationDataSource.insert(
+            val operationId = syncOperationDataSource.insert(
                 CompletionSyncOperationEntity(
                     userId = userId,
                     habitId = habitId,
@@ -138,11 +148,19 @@ class CompletionRepositoryImpl @Inject constructor(
                 )
             )
 
-            syncScheduler.schedule(userId)
+            // Try remote delete immediately
+            val completionId = "${habitId}_$date"
+            val remoteResult = remoteDataSource.deleteCompletion(userId, completionId)
+            
+            if (remoteResult.isSuccess) {
+                syncOperationDataSource.delete(operationId)
+            } else {
+                syncScheduler.schedule(userId)
+            }
 
             Result.success(Unit)
-
         } catch (e: Exception) {
+            Log.d("Toggle Habit", " Inside deleteCompletion failed")
             Result.failure(e)
         }
     }

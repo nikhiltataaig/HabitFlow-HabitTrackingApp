@@ -40,6 +40,16 @@ class LocalCompletionDataSource @Inject constructor(
         )
     }
 
+    suspend fun getCompletion(
+        habitId: String,
+        date: String
+    ): HabitCompletionEntity? {
+        return completionDao.getCompletion(
+            habitId = habitId,
+            date = date
+        )
+    }
+
     suspend fun isCompleted(
         habitId: String,
         date: String
