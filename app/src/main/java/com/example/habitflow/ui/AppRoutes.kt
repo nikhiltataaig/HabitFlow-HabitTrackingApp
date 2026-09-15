@@ -7,6 +7,12 @@ import kotlinx.serialization.Serializable
 sealed interface AppRoutes {
 
 
+ @Serializable
+ data object AuthGraph : AppRoutes
+
+ @Serializable
+ data object DashboardGraph : AppRoutes
+
     @Serializable
    data class HabitDetailRoute( val habitId: String?=null): AppRoutes
     @Serializable
@@ -16,7 +22,8 @@ sealed interface AppRoutes {
     @Serializable
     data object SignupRoute: AppRoutes
 
-
+  @Serializable
+  data object DashboardRoute: AppRoutes
 
     @Serializable
     data object HomeRoute : AppRoutes

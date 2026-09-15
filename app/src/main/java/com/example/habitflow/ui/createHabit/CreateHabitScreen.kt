@@ -39,15 +39,17 @@ import com.example.habitflow.CommonUiEvent
 import com.example.habitflow.domain.model.HabitFrequency
 import com.example.habitflow.ui.AppRoutes
 import com.example.habitflow.ui.TestTags
+import com.example.habitflow.ui.dashboard.DashboardScreenEvent
+import com.example.habitflow.ui.dashboard.DashboardViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateHabitScreen(
     navController: NavController,
-    createHabitViewModel: CreateHabitViewModel
+    dashboardViewModel: DashboardViewModel
 ) {
 
-    val uiState by createHabitViewModel.uiState.collectAsStateWithLifecycle()
+    val uiState by dashboardViewModel.uiStateCreateHabit.collectAsStateWithLifecycle()
 
     val lifecycleOwner = LocalLifecycleOwner.current
     val context = LocalContext.current
@@ -58,7 +60,7 @@ fun CreateHabitScreen(
 
     LaunchedEffect(Unit) {
 
-        createHabitViewModel.uiEvent
+        dashboardViewModel.uiEvent
             .flowWithLifecycle(
                 lifecycleOwner.lifecycle,
                 Lifecycle.State.STARTED
@@ -110,8 +112,8 @@ fun CreateHabitScreen(
                 navigationIcon = {
                     TextButton(
                         onClick = {
-                            createHabitViewModel.onEvent(
-                                CreateHabitScreenEvent.OnBackClicked
+                            dashboardViewModel.onEvent(
+                                DashboardScreenEvent.OnBackClicked
                             )
                         },
                         enabled = !showLoader.value,
@@ -136,8 +138,8 @@ fun CreateHabitScreen(
             OutlinedTextField(
                 value = uiState.name,
                 onValueChange = {
-                    createHabitViewModel.onEvent(
-                        CreateHabitScreenEvent.OnNameChanged(it)
+                    dashboardViewModel.onEvent(
+                        DashboardScreenEvent.OnNameChanged(it)
                     )
                 },
                 label = {
@@ -151,8 +153,8 @@ fun CreateHabitScreen(
             OutlinedTextField(
                 value = uiState.description,
                 onValueChange = {
-                    createHabitViewModel.onEvent(
-                        CreateHabitScreenEvent.OnDescriptionChanged(it)
+                    dashboardViewModel.onEvent(
+                        DashboardScreenEvent.OnDescriptionChanged(it)
                     )
                 },
                 label = {
@@ -176,8 +178,8 @@ fun CreateHabitScreen(
                 FilterChip(
                     selected = uiState.frequency == HabitFrequency.DAILY,
                     onClick = {
-                        createHabitViewModel.onEvent(
-                            CreateHabitScreenEvent.OnFrequencyChanged(
+                        dashboardViewModel.onEvent(
+                            DashboardScreenEvent.OnFrequencyChanged(
                                 HabitFrequency.DAILY
                             )
                         )
@@ -192,8 +194,8 @@ fun CreateHabitScreen(
                 FilterChip(
                     selected = uiState.frequency == HabitFrequency.WEEKLY,
                     onClick = {
-                        createHabitViewModel.onEvent(
-                            CreateHabitScreenEvent.OnFrequencyChanged(
+                        dashboardViewModel.onEvent(
+                            DashboardScreenEvent.OnFrequencyChanged(
                                 HabitFrequency.WEEKLY
                             )
                         )
@@ -218,8 +220,8 @@ fun CreateHabitScreen(
                     enabled = !showLoader.value,
                     onDaySelected = { day ->
 
-                        createHabitViewModel.onEvent(
-                            CreateHabitScreenEvent.OnDaySelected(day)
+                        dashboardViewModel.onEvent(
+                            DashboardScreenEvent.OnDaySelected(day)
                         )
                     }
                 )
@@ -239,8 +241,8 @@ fun CreateHabitScreen(
 
             Button(
                 onClick = {
-                    createHabitViewModel.onEvent(
-                        CreateHabitScreenEvent.OnCreateClicked
+                    dashboardViewModel.onEvent(
+                        DashboardScreenEvent.OnCreateClicked
                     )
                 },
                 modifier = Modifier.fillMaxWidth().testTag(TestTags.CREATE_HABIT_BUTTON),

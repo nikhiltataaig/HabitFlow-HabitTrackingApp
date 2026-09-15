@@ -16,98 +16,55 @@ import com.example.habitflow.ui.AppRoutes
 
 @Composable
 fun BottomNavigationBar(
-    navController: NavHostController
+    selectedPage: Int,
+    onPageSelected: (Int) -> Unit
 ) {
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute = navBackStackEntry?.destination?.route
 
     NavigationBar {
 
-        // HOME
         NavigationBarItem(
-            selected = currentRoute?.contains(
-                AppRoutes.HomeRoute::class.simpleName ?: ""
-            ) == true,
-
+            selected = selectedPage == 0,
             onClick = {
-                navController.navigate(AppRoutes.HomeRoute) {
-
-                    popUpTo<AppRoutes.HomeRoute> {
-                        saveState = true
-                    }
-
-                    launchSingleTop = true
-                    restoreState = true
-                }
+                onPageSelected(0)
             },
-
             icon = {
                 Icon(
                     imageVector = Icons.Default.Home,
                     contentDescription = "Home"
                 )
             },
-
             label = {
                 Text("Home")
             }
         )
 
-        // CREATE HABIT
         NavigationBarItem(
-            selected = currentRoute?.contains(
-                AppRoutes.CreateHabitRoute::class.simpleName ?: ""
-            ) == true,
-
+            selected = selectedPage == 1,
             onClick = {
-                navController.navigate(AppRoutes.CreateHabitRoute()) {
-
-                    popUpTo<AppRoutes.HomeRoute> {
-                        saveState = true
-                    }
-
-                    launchSingleTop = true
-                    restoreState = true
-                }
+                onPageSelected(1)
             },
-
             icon = {
                 Icon(
                     imageVector = Icons.Default.Add,
                     contentDescription = "Create Habit"
                 )
             },
-
             label = {
                 Text("Create")
             }
         )
 
-        // ANALYSIS
         NavigationBarItem(
-            selected = currentRoute?.contains(
-                AppRoutes.AnalysisRoute::class.simpleName ?: ""
-            ) == true,
-
+            selected = selectedPage == 2,
             onClick = {
-                navController.navigate(AppRoutes.AnalysisRoute) {
-
-                    popUpTo<AppRoutes.HomeRoute> {
-                        saveState = true
-                    }
-
-                    launchSingleTop = true
-                    restoreState = true
-                }
+                onPageSelected(2)
             },
-
             icon = {
                 Icon(
                     imageVector = Icons.Default.Analytics,
                     contentDescription = "Analysis"
                 )
             },
-
             label = {
                 Text("Analysis")
             }

@@ -118,14 +118,9 @@ class SignupViewModel @Inject constructor(
 
                 if(userResult.isSuccess){
                     syncScheduler.scheduleInitialSync(user.id)
-                    _uiEvent.send(CommonUiEvent.Navigate(AppRoutes.HomeRoute))
+                    _uiEvent.send(CommonUiEvent.Navigate(AppRoutes.DashboardRoute))
                 }
-                else{
-                    _uiState.value = _uiState.value.copy(errorMessage = "User already Exist")
 
-                        _uiEvent.send(CommonUiEvent.DoNothing)
-
-                }
 
 
 

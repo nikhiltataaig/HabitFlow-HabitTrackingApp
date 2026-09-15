@@ -31,13 +31,15 @@ import androidx.lifecycle.flowWithLifecycle
 import com.example.habitflow.CommonUiEvent
 import com.example.habitflow.ui.AppRoutes
 import com.example.habitflow.ui.TestTags
+import com.example.habitflow.ui.dashboard.DashboardScreenEvent
+import com.example.habitflow.ui.dashboard.DashboardViewModel
 
 @Composable
 fun AnalysisScreen(
-    analysisViewModel: AnalysisViewModel
+   dashboardViewModel: DashboardViewModel
 ) {
 
-    val uiState by analysisViewModel.uiState
+    val uiState by dashboardViewModel.uiStateAnalysis
         .collectAsStateWithLifecycle()
 
 
@@ -50,7 +52,7 @@ fun AnalysisScreen(
 
     LaunchedEffect(Unit) {
 
-        analysisViewModel.uiEvent
+        dashboardViewModel.uiEvent
             .flowWithLifecycle(
                 lifecycleOwner.lifecycle,
                 Lifecycle.State.STARTED
@@ -90,7 +92,7 @@ fun AnalysisScreen(
     PullToRefreshBox(
         isRefreshing = showLoader.value,
         onRefresh = {
-            analysisViewModel.onEvent(AnalysisScreenEvents.OnRefresh)
+            dashboardViewModel.onEvent(DashboardScreenEvent.OnRefresh)
         },
         modifier = Modifier.fillMaxSize()
     ) {

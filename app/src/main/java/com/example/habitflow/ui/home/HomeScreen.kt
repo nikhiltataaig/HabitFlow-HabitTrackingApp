@@ -6,13 +6,22 @@ import androidx.navigation.NavController
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Logout
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -28,14 +37,16 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
 import com.example.habitflow.CommonUiEvent
 import com.example.habitflow.ui.TestTags
+import com.example.habitflow.ui.dashboard.DashboardScreenEvent
+import com.example.habitflow.ui.dashboard.DashboardViewModel
 
 @Composable
 fun HomeScreen(
     navController: NavController,
-    homeViewModel: HomeViewModel
+    dashboardViewModel: DashboardViewModel
 ) {
 
-    val uiState by homeViewModel.uiState.collectAsStateWithLifecycle()
+    val uiState by dashboardViewModel.uiStateHome.collectAsStateWithLifecycle()
 
     val lifecycleOwner = LocalLifecycleOwner.current
     val context = LocalContext.current
@@ -46,7 +57,7 @@ fun HomeScreen(
 
     LaunchedEffect(Unit) {
 
-        homeViewModel.uiEvent
+        dashboardViewModel.uiEvent
             .flowWithLifecycle(
                 lifecycleOwner.lifecycle,
                 Lifecycle.State.STARTED
@@ -87,11 +98,26 @@ fun HomeScreen(
             .padding(16.dp)
     ) {
 
+        Row(modifier = Modifier.fillMaxWidth() , horizontalArrangement = Arrangement.SpaceBetween) {
+            Text(
+                text = "Today's Habits",
+                style = MaterialTheme.typography.headlineMedium
+            )
 
-        Text(
-            text = "Today's Habits",
-            style = MaterialTheme.typography.headlineMedium
-        )
+            IconButton(
+                onClick = {
+                    dashboardViewModel.onEvent(DashboardScreenEvent.OnLogoutClicked)
+                },
+                modifier = Modifier.testTag(TestTags.DELETE_HABIT_ICON)
+            ) {
+
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.Logout,
+                    contentDescription = "logout button",
+                    tint = MaterialTheme.colorScheme.primary
+                )
+            }
+        }
 
 
 
@@ -125,12 +151,12 @@ fun HomeScreen(
                         isCompleted =
                             uiState.completedHabitIds.contains(habit.id),
                         onToggle = {
-                            homeViewModel.onEvent(
-                                HomeScreenEvents.onHabitToggled(habit)
+                            dashboardViewModel.onEvent(
+                                DashboardScreenEvent.OnHabitToggled(habit)
                             )
                         },
                         onClick = {
-                            homeViewModel.onEvent(HomeScreenEvents.onHabitClicked(habit.id))
+                            dashboardViewModel.onEvent(DashboardScreenEvent.OnHabitClicked(habit.id))
                         }
                     )
                 }

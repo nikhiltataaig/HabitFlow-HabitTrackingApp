@@ -76,7 +76,7 @@ class LoginViewModel @Inject constructor(
             val result = authRepository.login(email,password)
 
             if(result.isSuccess){
-                _uiEvent.send(CommonUiEvent.Navigate(AppRoutes.HomeRoute))
+                _uiEvent.send(CommonUiEvent.Navigate(AppRoutes.DashboardRoute))
 
                 val user = result.getOrThrow()
                 syncScheduler.scheduleInitialSync(user.id)

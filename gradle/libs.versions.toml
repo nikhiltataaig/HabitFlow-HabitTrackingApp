@@ -43,6 +43,8 @@ foundation = "1.12.0"
 places = "5.3.0"
 uiGraphics = "1.12.0"
 ui = "1.12.0"
+navigationComposeVersion = "2.10.1"
+navigationRuntimeKtxVersion = "2.10.1"
 
 
 [libraries]
@@ -111,6 +113,8 @@ androidx-compose-foundation = { group = "androidx.compose.foundation", name = "f
 places = { group = "com.google.android.libraries.places", name = "places", version.ref = "places" }
 androidx-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics", version.ref = "uiGraphics" }
 androidx-ui = { group = "androidx.compose.ui", name = "ui", version.ref = "ui" }
+navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationComposeVersion" }
+navigation-runtime-ktx = { group = "androidx.navigation", name = "navigation-runtime-ktx", version.ref = "navigationRuntimeKtxVersion" }
 
 [plugins]
 

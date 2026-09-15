@@ -86,7 +86,7 @@ class CompletionRepositoryImplTest {
     fun `deleteCompletion deletes locally, records sync operation and schedules sync`() = runTest {
         // Given
         coEvery { localDataSource.deleteCompletion(any(), any()) } returns Unit
-        coEvery { syncOperationDataSource.insert(any()) } returns Unit
+        coEvery { syncOperationDataSource.insert(any()) } returns 1L
         coEvery { syncScheduler.schedule(any()) } returns Unit
 
         // When

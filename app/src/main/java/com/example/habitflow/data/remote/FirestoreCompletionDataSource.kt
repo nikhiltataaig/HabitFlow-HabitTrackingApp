@@ -32,6 +32,7 @@ class FirestoreCompletionDataSource @Inject constructor(
                         "id" to completion.id,
                         "userId" to completion.userId,
                         "habitId" to completion.habitId,
+                        "date" to completion.date,
                         "completedAt" to FieldValue.serverTimestamp()
                     )
                 )

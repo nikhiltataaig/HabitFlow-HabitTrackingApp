@@ -48,7 +48,7 @@ class HabitDetailViewModel @Inject constructor(
             HabitDetailScreenEvents.OnBackClicked -> {
                 viewModelScope.launch {
                     _uiEvent.send(
-                        CommonUiEvent.Navigate(AppRoutes.HomeRoute)
+                        CommonUiEvent.Navigate(AppRoutes.DashboardRoute)
                     )
                 }
             }
@@ -355,7 +355,7 @@ class HabitDetailViewModel @Inject constructor(
              */
             _uiEvent.send(
                 CommonUiEvent.Navigate(
-                    AppRoutes.HomeRoute
+                    AppRoutes.DashboardRoute
                 )
             )
         }
